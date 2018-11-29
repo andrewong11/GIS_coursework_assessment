@@ -188,8 +188,14 @@ Q6: The CASA treasure hunt locations were not randomly or uniformly distributed.
 
 Based on the High/Low Clustering Getis-Ord General G test implemented on ArcMap, the z-score was 6.576. Based on Moran's-I Spatial Autocorrelation test implemented on ArcMap, the z-score was 5.497. 
 
-These large z-scores imply there is a less than 1% probability that the concentrated pattern is truly random. 
+These large z-scores and small p-values lead us to reject the hypothesis that the treasure hunt locations were truly random, at all conventional significance levels. There is less than 1% probability that the concentrated pattern is truly random. 
 
+
+```{r Embedding Spatial autocorrelation results}
+library(knitr)
+knitr::include_graphics('morans_I.jpg')
+knitr::include_graphics('high_low.jpg')
+```
 
 Critical commentary (Word Count: 600 Words)
 
