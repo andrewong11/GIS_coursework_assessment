@@ -176,11 +176,11 @@ Answers to Problem Set Questions
 
 Q1: Distance travelled by Team 7  =  46.604 km.
 
-Q2: Team 7's route was with the 100m buffer of 24 TfL stations.
+Q2: Team 7's route was with the 100m buffer of 22 Tube stations.
 
-Q3: Team 7's total score achieved was 117 points, based on the 2016 scoring sheet. 
+Q3: Team 7's total score achieved was 62 points, based on the 2016 scoring sheet. It came within the 300m buffer of 17 out of the 50 Treasure hunt locations. 
 
-Q4: Team 7 passed through 30 out of 625 wards. Of these 30 wards, the lowest male life expectancy was 75.05, while the highest male life expectancy was 84.31.
+Q4: Team 7 passed through 30 out of 625 wards. Of these 30 wards, the lowest male life expectancy was 75.05 (Tower Hamlets - Weavers), while the highest male life expectancy was 84.31 (City of London).
 
 Q5: The average male life expectancy was 78.77, while the average female life expectancy was 84.09. 
 
@@ -191,13 +191,34 @@ Based on the High/Low Clustering Getis-Ord General G test implemented on ArcMap,
 These large z-scores and small p-values lead us to reject the hypothesis that the treasure hunt locations were truly random, at all conventional significance levels. There is less than 1% probability that the concentrated pattern is truly random. 
 
 
-```{r Embedding Spatial autocorrelation results}
+```{r Embedding Spatial autocorrelation results, echo=FALSE}
 library(knitr)
 knitr::include_graphics('morans_I.jpg')
 knitr::include_graphics('high_low.jpg')
 ```
 
 Critical commentary (Word Count: 600 Words)
+
+Data Preparation
+
+I set out to use R for this assessment. I used the dataset for the 2016 Team 7 route, the hunt addresses and scoring data provided through the Practical 7 instructions, because I was unable to geocode the addresses. The London Wards shapefile I used was from work done in previous weeks. I looked through the 'huntaddresses' csv file and noticed that one of the addresses (King's Cross Platform 9 ¾) was in the United States, so I manually changed the coordinates of that address. I proceeded to convert all the files from SP to SimpleFeatures because it is crucial to ensure that they are of the same class. I decided on SimpleFeatures because it was the most versatile and compatible package. Furthermore, I set the coordinate reference system to the British National Grid projected coordinate system. 
+However, I encountered problems with the projection systems on R - the projection systems of the route and London Ward layers were different from the projection systems of the 'huntaddresses' and tube stations layers. Because of these challenges, I moved my analysis to ArcGIS, by writing all the files I had prepared so far into shapefiles that could be read on ArcGIS. I set the layers to a common Geographic Coordinate System GCS_OSGB_1936, and the British National Grid Projected Coordinate System, with the Project tool in the Data Management toolbox. Then, I could proceed with spatial analysis. 
+
+Methodology and analysis
+
+The first question was answered through R with the 'st_length' command, because the SimpleFeatures dataframes considered had similar projections. The rest of the questions were answered with ArcGIS. 
+With the Buffer tool in the Analysis toolbox, I created 100m buffers around all the tube stations. Using the Intersect tool in the same toolbox, I calculated how many buffers the route had intersected. I noticed that there was double counting of both King's Cross and Kings Cross St Pancras stations. I used the 'Find identical' and 'Delete identical' tools in the Data management toolbox to find and remove duplicates in the output. This same workflow was replicated for Questions 3-5. To find the maximum, minimum and average life expectancies, I looked at the statistics and sorted the field in the attribute table. This was a shortcut, instead of summarizing the attribute table.
+To assess the spatial autocorrelation of the hunt addresses I ran two pattern analyses in the Spatial Statistics toolbox. I used the Getis-Ord General G and the Moran's I tests, which showed that the probability that locations were randomly distributed were almost 0. However, the z-scores and associated p-values depend on the test and the conceptualization of spatial relationships specified. In this instance, I used 'inverse distance', with the Euclidean distance method based on the figure below.
+
+```{r echo=FALSE}
+library(knitr)
+knitr::include_graphics('morans_results.jpg')
+```
+
+
+Reflections
+
+We must ensure that the coordinates after geocoding are correct, before any spatial analysis. Outputs in ArcGIS (and in R) should always be assessed and checked for duplicates, and subsequently removed. For this assessment, I used the Planar Euclidean measure of distance, rather than Spherical measurements because I was dealing with a relatively small geographic area in London.  I was aware of the methods in R to solve these problems, such as the st_buffer, st_within and st_intersects commands in the 'sf' package. However, the challenges with the projection systems prompted me to use ArcGIS instead. Although I could have returned to R after resolving the problem on ArcGIS, I decided to continue because of my familiarity with the software. Nonetheless, I acknowledge the merit in using R, especially with larger datasets, iterative processes (greater flexibility than ArcGIS's Model Builder) and for aesthetic purposes.
 
 ```{r Preparing Data for coursework, include=FALSE}
 # 2016 Team 7 Route
